@@ -1,0 +1,243 @@
+/* Custom styles for the Mosque website */
+@font-face {
+  font-family: 'CustomFont';
+    src: url('../images/font/ArabDances.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+  font-family: 'CustomFont1';
+    src: url('../images/font/Skynews.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+  font-family: 'CustomFont2';
+    src: url('../images/font/RobotoMono.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+body {
+  font-family: 'CustomFont2', sans-serif;
+}
+
+/* Navigation Styles */
+.navbar {
+  font-family: 'CustomFont1', sans-serif;
+    padding: 0.5rem 0;
+    font-size: 1.3rem;
+}
+
+.navbar-brand {
+    margin-right: 0;
+}
+
+.brand-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-logo {
+    max-height: 180px;  /* Reduced from 70px */
+    width: auto;
+    object-fit: contain;
+    transition: all 0.3s ease; /* For smooth resizing */
+}
+
+
+.site-name {
+    display: flex;
+    flex-direction: column;
+    font-family: 'CustomFont', sans-serif;
+    font-size: 2rem;
+    font-weight: bold;
+    margin-left: 0.5rem;
+    color: #2c3e50;
+    line-height: 1.2;
+}
+
+.site-name-primary,
+.site-name-secondary {
+    display: inline-block;
+}
+
+.navbar-nav {
+    text-align: right;
+}
+
+.nav-link {
+    color: #2c3e50 !important;
+    font-weight: 500;
+    padding: 0.5rem 1rem !important;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+    color: #3498db !important;
+}
+
+
+/* Ensure the logo stays within size */
+.navbar-brand img {
+  max-height: 120px;
+}
+
+/* Carousel image adjustments */
+.carousel-item img {
+  height: 400px;
+  object-fit: cover;
+}
+#bannerCarousel {
+  position: relative;
+  margin-bottom: +12%; /* Adjust this value as needed */
+}
+
+/* Custom styles for a bigger section */
+.big-div {
+  min-height: 500px; /* Adjust this value for your desired height */
+  padding: 50px;     /* Extra padding for better spacing */
+  background-image: url('../images/background.jpg'); /* Use your desired background */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  text-align: right;
+}
+
+/* Overlapping Timetable */
+.timetable-overlap {
+  position: absolute;
+  bottom: -50%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  z-index: 10;
+}
+
+.timetable-box {
+  border-radius: 10px;
+  background-color: #ffffff;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin: 0 auto;
+  max-width: 800px;
+}
+
+.timetable-box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.table-bordered th,
+.table-bordered td {
+  border: 1px solid #dee2e6;
+}
+
+.table thead th {
+  background-color: #2c3e50;
+  color: white;
+}
+
+.table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+
+.navbar-nav {
+  text-align: right;
+}
+
+.nav-link {
+  color: #2c3e50 !important;
+  font-weight: 500;
+  padding: 0.5rem 1rem !important;
+  transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+  color: #3498db !important;
+}
+
+/* Ensure the logo stays within size */
+.navbar-brand img {
+  max-height: 120px;
+}
+
+/* Desktop layout */
+@media (min-width: 992px) {
+  .site-name {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+
+  .site-name-secondary {
+    margin-left: 0.3rem;
+  }
+
+}
+
+/* Mobile responsive styles */
+@media (max-width: 991px) {
+  #bannerCarousel {
+    position: relative;
+    margin-bottom: +15%; /* Adjust this value as needed */
+  }
+    .navbar-collapse {
+        padding: 1rem 0;
+        background: #f8f9fa;
+    }
+
+    .site-name {
+        font-size: 1.35rem;
+        margin-left: 0.5rem;
+    }
+
+    .navbar-nav {
+        margin-top: 1rem;
+    }
+
+    .nav-item {
+        margin: 0.25rem 0;
+    }
+    .navbar-logo {
+        max-height: 80px;  /* Smaller for mobile */
+    }
+}
+
+
+@media (max-width: 768px) {
+  .carousel-item img {
+    height: 250px;
+  }
+
+  .site-name {
+        font-size: 1.25rem; /* Smaller font size for mobile */
+    }
+
+    .timetable-overlap {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    transform: none;
+    width: 100%;
+    margin-top: 20px;
+  }
+}
+
+@media (max-width: 575px) {
+  .brand-wrapper {
+     flex-direction: row;  /* Keep logo and name in row */
+     align-items: center;
+ }
+
+ .navbar-logo {
+     max-height: 75px;  /* Even smaller for mobile */
+ }
+
+ .site-name {
+     font-size: 1.1rem;
+     margin-left: 0.5rem;
+     margin-top: 0;
+ }
+}
