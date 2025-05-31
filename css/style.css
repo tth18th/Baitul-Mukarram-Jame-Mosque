@@ -163,6 +163,53 @@ body {
   max-height: 120px;
 }
 
+.news-card {
+   transition: transform 0.3s ease, box-shadow 0.3s ease;
+ }
+ .news-card:hover {
+   transform: translateY(-5px);
+   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+ }
+
+
+<!-- Custom Styles Social Buttons -->
+ .social-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 28px;
+    padding: 12px 20px;
+    border-radius: 30px;
+    color: white;
+    text-decoration: none;
+    transition: 0.3s ease-in-out;
+    font-weight: 500;
+  }
+
+.social-btn:hover {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+
+
+  .preset-amount:hover {
+     background-color: #198754 !important;
+     color: white !important;
+     transition: all 0.3s ease;
+   }
+
+   .form-control:focus {
+     box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+     border-color: #198754;
+   }
+
+   .btn-success:hover {
+     background-color: #157347;
+     border-color: #157347;
+   }
+
+
+
 /* Desktop layout */
 @media (min-width: 992px) {
   .site-name {
@@ -240,4 +287,26 @@ body {
      margin-left: 0.5rem;
      margin-top: 0;
  }
+
+ .preset-amount {
+      width: 100%;
+      margin-bottom: 0.5rem;
+    }
+
+    .input-group .form-control {
+      font-size: 1.25rem;
+      padding: 1rem;
+    }
+
+    .input-group .btn {
+      font-size: 1rem;
+      white-space: nowrap;
+    }
+
+    .fs-5 {
+      font-size: 1rem !important;
+    }
+
+
+
 }
