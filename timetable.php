@@ -2,8 +2,13 @@
 <div class="container my-5">
   <h1>Timetables</h1>
   <p>Prayer times and community event schedules.</p>
+  <?php 
+    include_once("./js/script.php");
+    $timetable = new PrayerTimeTable();
+    $ttbl = $timetable->generateTimetableMonth();
+  ?>
   <!-- Example Timetable Table -->
-  <table class="table table-striped">
+  <!-- <table class="table table-striped">
     <thead>
       <tr>
         <th scope="col">Prayer</th>
@@ -32,6 +37,6 @@
         <td>08:00 PM</td>
       </tr>
     </tbody>
-  </table>
+  </table> -->
 </div>
 <?php include 'includes/footer.php'; ?>

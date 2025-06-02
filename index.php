@@ -33,67 +33,35 @@
     <span class="carousel-control-next-icon" aria-hidden="true"></span>
     <span class="visually-hidden">Next</span>
   </button>
-
-  <!-- Overlapping Timetable Box -->
-  <div class="timetable-overlap">
-    <div class="container">
-      <div class="row justify-content-center">
-        <div class="col-md-8">
-          <div class="timetable-box bg-light p-4 shadow text-center">
-            <h4 class="mb-3">Prayer Timetable</h4>
-            <div class="table-responsive">
-              <table class="table table-bordered">
-                <thead>
-                  <tr>
-                    <th>Prayer</th>
-                    <th>Start</th>
-                    <th>Jama'at</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>FAJR</td>
-                    <td>4:34 am</td>
-                    <td>5:00 am</td>
-                  </tr>
-                  <tr>
-                    <td>ZHUR</td>
-                    <td>12:20 pm</td>
-                    <td>1:00 pm</td>
-                  </tr>
-                  <tr>
-                    <td>ASR</td>
-                    <td>4:03 pm</td>
-                    <td>4:45 pm</td>
-                  </tr>
-                  <tr>
-                    <td>MAGRIB</td>
-                    <td>6:00 pm</td>
-                    <td>6:10 pm</td>
-                  </tr>
-                  <tr>
-                    <td>ISHA</td>
-                    <td>8:02 pm</td>
-                    <td>8:10 pm</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <small class="text-muted">Times are based on local calculations.</small>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Main Content -->
-
-<!-- New Bigger Div -->
-<div class="container my-6 big-div">
+  <?php
+   include_once("js/script.php");
+   $t = new PrayerTimeTable();
+   $ttbl = $t->dynamicTimetable();
+ ?>
+  
+<!-- Welcome Section -->
+<div class="container my-6 big-div text-center">
   <h1>Welcome to our Mosque</h1>
   <p>Our community center and place of worship offers services and community programs. Join us for prayers, events, and more.</p>
 </div>
 
+
+
+<!-- Social Media Links -->
+<div class="container text-center my-6">
+  <h2>Follow Us</h2>
+  <p>Stay connected through our social media channels.</p>
+  <div class="d-flex justify-content-center flex-wrap gap-3 mt-3">
+    <a href="https://www.facebook.com/dmjmdundee" class="social-btn facebook" target="_blank">
+      <i class="fa-brands fa-facebook-f"></i> Facebook
+    </a>
+    <a href="https://www.instagram.com/bmjmdundee/" class="social-btn instagram" target="_blank">
+      <i class="fa-brands fa-instagram"></i> Instagram
+    </a>
+    <a href="https://www.threads.net/@bmjmdundee" class="social-btn threads" target="_blank">
+      <i class="fa-brands fa-threads"></i> Threads
+    </a>
+  </div>
+</div>
 
 <?php include 'includes/footer.php'; ?>
