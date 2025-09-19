@@ -3,7 +3,7 @@
 include 'includes/header.php';
 include 'StripePayment.php';
 
-$stripeSecretKey = '';
+$stripeSecretKey = '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';
 $baseUrl = 'https://dmjmdundee.com';
 
 $successUrl = $baseUrl . '/donation-success.php';
@@ -134,7 +134,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <script src="https://js.stripe.com/v3/"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      var stripe = Stripe('');
+      var stripe = Stripe('pk_live_51RRfOOFlnk9NHsaiWEA0OU6bESsf5WWKFM7FAacyHxAc2dXbFT2IiXuR3jEgTWUkflwPD5x3PD95EBfAfol8KtCb005BwSG78M');
 
       stripe.redirectToCheckout({
         sessionId: '<?= $checkoutSession->id ?>'
