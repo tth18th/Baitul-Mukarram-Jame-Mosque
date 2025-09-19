@@ -1,226 +1,309 @@
 <?php
-//class for timetable
-class PrayerTimetable {
-    //response of the api will be stored here
-    private $response;
-    //data of the api from the response will be stored here
-    private $data;
-    //pasing the url of the json data here directly, due to the fact that the api is free and unlimited
-    private $api_url = "https://api.aladhan.com/v1/calendar/{year}/{month}?latitude=56.47404281844331&longitude=-2.963501315403592&method=3&shafaq=general&tune=5%2C3%2C5%2C7%2C9%2C-1%2C0%2C8%2C-6&timezonestring=UTC&calendarMethod=UAQ";
-    //construct class when called will automatically call the api aswell and therefore decode it
-    public function __construct()
-    {
-        //check response of the content
-        #$this->response = file_get_contents($this->api_url);
 
-        //need to implement a function that changes the year and month
-        $tmp = $this->checkdateandchange();
-        //checks if there's anything wrong with the json data before displaying
-        $this->response = $this->checkIntegrityOfData($tmp);
-        //decodes the json data
+class PrayerTimetable {
+    private $response;
+    private $data;
+    private $api_url = "https://api.aladhan.com/v1/calendarByCity/{year}/{month}?city=Dundee&country=GB&method=3&timezonestring=Europe/London&school=1";
+
+    // Monthly Jamā‘ah offsets (fallback if dynamic adjustment is disabled)
+    private $monthly_jamaah_offsets = [
+        1  => ['Fajr' => 90, 'Dhuhr' => 25, 'Asr' => 30, 'Maghrib' => 10, 'Isha' => 10],  // January
+        2  => ['Fajr' => 85, 'Dhuhr' => 28, 'Asr' => 32, 'Maghrib' => 10, 'Isha' => 10],  // February
+        3  => ['Fajr' => 70, 'Dhuhr' => 30, 'Asr' => 35, 'Maghrib' => 10, 'Isha' => 10],  // March
+        4  => ['Fajr' => 60, 'Dhuhr' => 33, 'Asr' => 37, 'Maghrib' => 10, 'Isha' => 10],  // April
+        5  => ['Fajr' => 50, 'Dhuhr' => 36, 'Asr' => 39, 'Maghrib' => 10, 'Isha' => 10],  // May
+        6  => ['Fajr' => 40, 'Dhuhr' => 40, 'Asr' => 42, 'Maghrib' => 10, 'Isha' => 10],  // June
+        7  => ['Fajr' => 45, 'Dhuhr' => 40, 'Asr' => 42, 'Maghrib' => 10, 'Isha' => 10],  // July
+        8  => ['Fajr' => 55, 'Dhuhr' => 38, 'Asr' => 40, 'Maghrib' => 10, 'Isha' => 10],  // August
+        9  => ['Fajr' => 65, 'Dhuhr' => 35, 'Asr' => 38, 'Maghrib' => 10, 'Isha' => 10],  // September
+        10 => ['Fajr' => 75, 'Dhuhr' => 30, 'Asr' => 34, 'Maghrib' => 10, 'Isha' => 10],  // October
+        11 => ['Fajr' => 85, 'Dhuhr' => 27, 'Asr' => 31, 'Maghrib' => 10, 'Isha' => 10],  // November
+        12 => ['Fajr' => 90, 'Dhuhr' => 25, 'Asr' => 30, 'Maghrib' => 10, 'Isha' => 10],  // December
+    ];
+
+    // 🔧 CONFIG: Enable/disable dynamic daylight-based adjustment
+    private $enable_dynamic_adjustment = true;
+
+    public function __construct() {
+        $url = $this->checkdateandchange();
+        $this->response = $this->checkIntegrityOfData($url);
         $this->data = json_decode($this->response);
     }
 
-    //checking if the data is working properly if not it will send a message instead
-    public function checkIntegrityOfData($item)
-    {
-        $txt = file_get_contents($item);
-        if($txt == FALSE)
-        {
-            echo "<h1>something is wrong please retry again later</h1> <br>";
-            echo "<h1>ERROR 100 - No data or content available</h1>";
-        } else {
-            return $txt;
+    public function checkIntegrityOfData($url) {
+        $txt = @file_get_contents($url);
+        if ($txt === FALSE) {
+            die("<div class='alert alert-danger'>Error: Could not fetch prayer times. Please try again later.</div>");
         }
+        return $txt;
     }
 
-    //nearly done need to change a few things for it
-    public function checkdateandchange(){
-        //echo $this->api_url;
-        //echo '<br>--------------------------------------------- </br>';
-        $tmp = $this->api_url;
-        $thismonth = date('n');
-        $thisyear = date('Y');
-
-        $updt_api_url = str_replace(["{year}","{month}"],[$thisyear,$thismonth],$tmp);
-        return $updt_api_url;
-        //echo $thismonth, $thisyear;
-        //echo '<br>--------------------------------------------- </br>';
+    public function checkdateandchange() {
+        $year = date('Y');
+        $month = date('n');
+        return str_replace(["{year}", "{month}"], [$year, $month], $this->api_url);
     }
 
-    //function doesnt't store the data due to database memory not being enough
-    // public function getTimetable()
-    // {
-    //     $timingList = [];
-    //     foreach ($this->data->data as $day)
-    //     {
-    //         $base = $day->date->gregorian;
-    //         $date = $base->date;
-    //         $weekday = $base->weekday->en;
-    //         echo $date;
-    //         echo $weekday;
-    //         //day contains all the prayer times
-    //         //the foreach loop will loop until the end of the month, diplsaying namaz name and time
-    //         foreach($day->timings as $title => $time)
-    //         {
-    //             //condition of removing 2 type of data
-    //             if($title !== "Firstthird" && $title !== "Lastthird"){
-    //             //may need to clear out firstthird. lastthird
-    //             echo $title;
-                
-    //             echo str_replace(" (UTC)"," ",$time);
-    //             //echo $timingList;
-    //             }
-    //         }
-    //     }
-    //     //return $timingList; no return required when this instantiate
-    // }
-
-    //comparison of dates, will return false or true
-    public function datecomp($_data): bool
-    {
-        $tmp = date("d-m-Y", strtotime($_data));
-        $todaydate = date("d-m-Y");
-        if($todaydate !== $tmp)
-        {
-            return TRUE;
-        } else { 
-            return FALSE; 
-        }
+    public function datecomp($api_date): bool {
+        $today = date("d-m-Y");
+        return $today !== $api_date;
     }
 
+    private function addMinutesToTime($time, $minutes) {
+        $time = str_replace([' (UTC)', ' (BST)', ' (GMT)'], '', $time);
+        $timestamp = strtotime($time);
+        if ($timestamp === false) return $time;
+        return date('H:i', strtotime("+$minutes minutes", $timestamp));
+    }
 
-    //generates the whole timetable, checks if today's date is same as one of the rows and if so it will highlight
-    //removes certain columns that are not required
-    public function generateTimetableMonth()
-    {
-        //$todaydate = date("d-m-Y");
-        echo "<div class='table-responsive'>";
-        echo "<table border='1', class='table table-striped'>";
-        echo "<thead>";
-        echo "<tr><th scope='col'>Date</th><th scope='col'>Weekday</th>";
-        $first_day = reset($this->data->data);
-        $prayer_titles = array_keys((array) $first_day->timings);
-        #this might be put as another function instead
-        $prayer_titles = array_filter($prayer_titles, function($title)
-        {
-            return !in_array($title, ["Firstthird","Midnight","Lastthird","Sunrise","Sunset"]);
-        });
-        
-        foreach($prayer_titles as $title){
-            echo "<th scope='col'>$title</th>";
+    private function getCurrentMonthOffsets() {
+        $month = (int)date('n');
+        return $this->monthly_jamaah_offsets[$month] ?? $this->monthly_jamaah_offsets[1];
+    }
+
+    /**
+     * 🔥 ADVANCED: Dynamically adjust offset based on day length (sunrise to sunset)
+     */
+    private function calculateDynamicOffset($sunrise, $sunset, $prayer) {
+        if (!$this->enable_dynamic_adjustment) {
+            $monthly = $this->getCurrentMonthOffsets();
+            return $monthly[$prayer] ?? 10;
         }
-        echo "</tr></thead>";
-        foreach ($this->data->data as $day)
-        {
-            $base = $day->date->gregorian;
-            $date = $base->date;
-            $weekday = $base->weekday->en;
-            #echo $tmp;
-                       
-            if($this->datecomp($date)){
-                echo "<tr scope='row'>";
-            } else 
-            {
-                echo '<tr scope="row" class="table-dark">';
+
+        $rise = strtotime($sunrise);
+        $set = strtotime($sunset);
+
+        if ($rise === false || $set === false) {
+            $monthly = $this->getCurrentMonthOffsets();
+            return $monthly[$prayer] ?? 10;
+        }
+
+        $day_length_minutes = ($set - $rise) / 60;
+        $min_day = 360;
+        $max_day = 1080;
+        $ratio = max(0.0, min(1.0, ($day_length_minutes - $min_day) / ($max_day - $min_day)));
+
+        $offset_ranges = [
+            'Dhuhr' => [20, 45],
+            'Asr'   => [25, 50],
+            'Fajr'  => [70, 40],
+            'Isha'  => [10, 15],
+        ];
+
+        if (isset($offset_ranges[$prayer])) {
+            [$min_offset, $max_offset] = $offset_ranges[$prayer];
+            if ($prayer === 'Fajr') $ratio = 1 - $ratio;
+            return (int)round($min_offset + ($ratio * ($max_offset - $min_offset)));
+        }
+
+        $monthly = $this->getCurrentMonthOffsets();
+        return $monthly[$prayer] ?? 10;
+    }
+
+    // ✅ FIXED: Summer = April (4) to September (9)
+    private function getJumuahTime($month) {
+        return ($month >= 4 && $month <= 9) ? "13:45" : "13:30";
+    }
+
+    public function generateTimetableMonth() {
+        if (!isset($this->data->data) || empty($this->data->data)) {
+            echo "<div class='alert alert-warning'>No prayer time data available for this month.</div>";
+            return;
+        }
+
+        echo "<div class='table-responsive my-4'>";
+        echo "<h3 class='mb-3'>Monthly Prayer Timetable — Dundee</h3>";
+        echo "<table class='table table-bordered table-striped align-middle'>";
+        echo "<thead class='table-dark'><tr>";
+        echo "<th>Gregorian Date</th>";
+        echo "<th>Hijri Date</th>";
+        echo "<th>Weekday</th>";
+
+        $prayer_order = [
+            'Sunrise',
+            'Fajr',
+            'Dhuhr',
+            'Jumuah',
+            'Asr',
+            'Sunset',
+            'Maghrib',
+            'Isha'
+        ];
+
+       foreach ($prayer_order as $prayer) {
+            if (in_array($prayer, ['Sunrise', 'Sunset'])) {
+                echo "<th>$prayer</th>"; // Only one column
+            } elseif ($prayer === 'Jumuah') {
+                echo "<th>Jumu’ah<br><small>Start</small></th>";
+               // echo "<th><small>Jamā‘ah</small></th>";
+            } else {
+                echo "<th>$prayer<br><small>Adhan</small></th>";
+                echo "<th><small>Jamā‘ah</small></th>";
             }
-            echo "<td>$date</td><td>$weekday</td>";
-            foreach ($prayer_titles as $title)
-            {
-                $time = str_replace( " (UTC)", "",$day->timings->$title);
-                echo "<td>$time</td>";
+        }
+
+        echo "</tr></thead><tbody>";
+
+        foreach ($this->data->data as $day) {
+            $gregorian = $day->date->gregorian;
+            $hijri = $day->date->hijri;
+            $date_greg = $gregorian->date;
+            $date_hijri = $hijri->date;
+            $weekday = $gregorian->weekday->en;
+
+            $row_class = $this->datecomp($date_greg) ? '' : 'table-primary fw-bold';
+
+            $sunrise_time = str_replace([' (UTC)', ' (BST)', ' (GMT)'], '', $day->timings->Sunrise ?? '06:00');
+            $sunset_time = str_replace([' (UTC)', ' (BST)', ' (GMT)'], '', $day->timings->Sunset ?? '18:00');
+
+            echo "<tr class='$row_class'>";
+            echo "<td>$date_greg</td>";
+            echo "<td>$date_hijri</td>";
+            echo "<td>$weekday</td>";
+
+            foreach ($prayer_order as $prayer) {
+                if ($prayer === 'Jumuah') {
+                    $is_friday = ($weekday === 'Friday');
+                    if ($is_friday) {
+                        $jumuah_time = $this->getJumuahTime((int)$gregorian->month->number);
+                        //$jamaah_time = $jumuah_time;
+                        echo "<td class='table-success fw-bold'>$jumuah_time <span class='badge bg-success ms-1'><i class='fas fa-mosque'></i></span></td>";
+                     //   echo "<td class='table-success fw-bold'>$jamaah_time</td>";
+                    } else {
+                        echo "<td colspan='2' class='text-muted fst-italic text-center'>—</td>";
+                    }
+                } elseif (in_array($prayer, ['Sunrise', 'Sunset'])) {
+                    $adhan_time = str_replace([' (UTC)', ' (BST)', ' (GMT)'], '', $day->timings->{$prayer} ?? 'N/A');
+                    echo "<td>$adhan_time</td>";
+                    //echo "<td></td>";
+                } else {
+                    $adhan_raw = $day->timings->{$prayer} ?? 'N/A';
+                    $adhan_time = str_replace([' (UTC)', ' (BST)', ' (GMT)'], '', $adhan_raw);
+                    $offset = $this->calculateDynamicOffset($sunrise_time, $sunset_time, $prayer);
+                    $jamaah_time = $this->addMinutesToTime($adhan_raw, $offset);
+                    echo "<td>$adhan_time</td>";
+                    echo "<td>$jamaah_time</td>";
+                }
             }
+
             echo "</tr>";
         }
-        echo "</table>";
-        echo "</div>";
+
+        echo "</tbody></table></div>";
+
+        if ($this->enable_dynamic_adjustment) {
+            echo "<div class='alert alert-info'>💡 Jamā‘ah times dynamically adjusted based on daylight duration.</div>";
+        } else {
+            echo "<div class='alert alert-secondary'>📅 Using fixed monthly Jamā‘ah offsets.</div>";
+        }
     }
 
-    #data can be fed here so it can take the 
-    public function dynamicTimetable()
-    {
-        echo '
-        <div class="timetable-overlap">
-        <div class="container">
-        <div class="row justify-content-center">
-        <div class="col-md-8">
-        <div class="timetable-box bg-light p-4 shadow text-center">
-        <h4 class="mb-3">Prayer Timetable</h4>
-        <div class="table-responsive">
-        <table class="table table-bordered">
-        <thead>
-        <tr>
-        <th>Prayer</th>
-        <th>Start</th>
-        <th>Jamat</th>
-        </tr>
-        </thead>
-        </tbody>';
-        $first_day = reset($this->data->data);
-        $prayer_titles = array_keys((array) $first_day->timings);
-        #this might be put as another function instead
-        $prayer_titles = array_filter($prayer_titles, function($title)
-        {
-            return !in_array($title, ["Firstthird","Midnight","Lastthird","Sunrise","Sunset"]);
-        });
-        //comparison of days and if true then show only the prayers of that day
-        foreach ($this->data->data as $base){
-            
-            $_base = $base->date->gregorian;
-            $date = $_base->date;
-            if(!$this->datecomp($date)){
-                echo $date;
-                foreach($prayer_titles as $title)
-                {
-                    echo '<tr>';
-                    echo '<td>'.$title.'</td>';
-                    $time = str_replace( " (UTC)", "",$base->timings->$title);
-                    echo '<td>'.$time.'</td>';
-                    echo '</tr>';
-                }
-                
+    public function dynamicTimetable() {
+        if (!isset($this->data->data)) {
+            echo "<div class='alert alert-warning'>No data available.</div>";
+            return;
+        }
+
+        $today_data = null;
+        foreach ($this->data->data as $day) {
+            $gregorian = $day->date->gregorian;
+            $date_greg = $gregorian->date;
+            if (!$this->datecomp($date_greg)) {
+                $today_data = $day;
+                break;
             }
         }
-        echo '</tbody>
-        </table>
-        </div>
-        <small class="text-muted">Times are based on local calculations.</small>
-        </div>
-        </div>
-        </div>
-        </div>
-        </div>
+
+        if (!$today_data) {
+            echo "<div class='alert alert-warning'>Today's prayer times not found.</div>";
+            return;
+        }
+
+        $gregorian = $today_data->date->gregorian;
+        $hijri = $today_data->date->hijri;
+        $weekday = $gregorian->weekday->en; // ✅ FIXED: Define $weekday here
+        $sunrise = str_replace([' (UTC)', ' (BST)', ' (GMT)'], '', $today_data->timings->Sunrise ?? '06:00');
+        $sunset = str_replace([' (UTC)', ' (BST)', ' (GMT)'], '', $today_data->timings->Sunset ?? '18:00');
+
+        echo '
+        <div class="timetable-overlap my-5">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <div class="timetable-box bg-light p-4 shadow text-center rounded">
+                            <h4 class="mb-3">🕌 Today\'s Prayer Timetable — Dundee</h4>
+                            <p class="mb-1"><strong>Gregorian:</strong> ' . $gregorian->date . ' (' . $weekday . ')</p>
+                            <p class="mb-3"><strong>Hijri:</strong> ' . $hijri->date . ' ' . $hijri->month->en . '</p>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover align-middle">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Prayer</th>
+                                            <th>Adhan</th>
+                                            <th>Jamā‘ah</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>';
+
+        $prayer_order = ['Fajr', 'Sunrise', 'Dhuhr', 'Jumuah', 'Asr', 'Sunset', 'Maghrib', 'Isha'];
+
+        foreach ($prayer_order as $prayer) {
+            if ($prayer === 'Jumuah') {
+                $is_friday = ($weekday === 'friday'); 
+                $jumuah_time = $this->getJumuahTime((int)$gregorian->month->number);
+                $jamaah_time = $jumuah_time;
+
+                $row_class = $is_friday ? 'table-success fw-bold' : 'text-muted';
+                $display_time = $is_friday ? $jumuah_time : '—';
+
+                echo "<tr class='$row_class'>";
+                echo "<td><strong>Jumu’ah</strong> ";
+                if ($is_friday) {
+                    echo "<span class='badge bg-success'><i class='fas fa-mosque'></i> Friday</span>";
+                }
+                echo "</td>";
+
+                if ($is_friday) {
+                    echo "<td>$jumuah_time</td>";
+                    echo "<td>$jamaah_time</td>";
+                } else {
+                    echo "<td colspan='2' class='text-center fst-italic'>$display_time</td>";
+                }
+                echo "</tr>";
+            } else {
+                $adhan_raw = $today_data->timings->{$prayer} ?? 'N/A'; // ✅ FIXED: Use $today_data, not $day
+                $adhan_time = str_replace([' (UTC)', ' (BST)', ' (GMT)'], '', $adhan_raw);
+
+                $row_class = in_array($prayer, ['Sunrise', 'Sunset']) ? 'text-muted' : 'fw-bold';
+
+                echo "<tr class='$row_class'>";
+                echo "<td><strong>$prayer</strong></td>";
+
+                if (in_array($prayer, ['Sunrise', 'Sunset'])) {
+                    echo "<td colspan='2' class='text-center'>$adhan_time</td>";
+                } else {
+                    $offset = $this->calculateDynamicOffset($sunrise, $sunset, $prayer);
+                    $jamaah_time = $this->addMinutesToTime($adhan_raw, $offset);
+                    echo "<td>$adhan_time</td>";
+                    echo "<td>$jamaah_time</td>";
+                }
+
+                echo "</tr>";
+            }
+        }
+
+        echo '
+                                </tbody>
+                            </table>
+                            <small class="text-muted d-block mt-2">
+                                Times calculated for Dundee, Scotland. 
+                                ' . ($this->enable_dynamic_adjustment ? 'Jamā‘ah times auto-adjusted by daylight duration.' : 'Using monthly preset offsets.') . '
+                                <br>Jumu’ah: 1:30 PM (Oct-Mar), 1:45 PM (Apr-Sep).
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>';
-        //$prayer_titles = array_unique((array) $get_data->timings);
-        #$prayer_titles = array_filter($prayer_titles, function($title)
-        #{
-        #    return !in_array($title, ["Firstthird","Midnight","Lastthird","Sunrise","Sunset"]);
-        #});
-        #foreach($prayer_titles as $title => $name)
-        #{
-        #    echo $title;
-        #    echo $name;
-        #}
-
-
-
-
-
-        echo '</div>';
     }
-
-
 }
-
-//original url in case it doesn't work anymore
-#$api_url = "https://api.aladhan.com/v1/calendar/2025/3?latitude=56.47404281844331&longitude=-2.963501315403592&method=3&shafaq=general&tune=5%2C3%2C5%2C7%2C9%2C-1%2C0%2C8%2C-6&timezonestring=UTC&calendarMethod=UAQ";
-
-//$api_url = "https://api.aladhan.com/v1/calendar/2025/3?latitude=56.47404281844331&longitude=-2.963501315403592&method=3&shafaq=general&tune=5%2C3%2C5%2C7%2C9%2C-1%2C0%2C8%2C-6&timezonestring=UTC&calendarMethod=UAQ";
-//$timetable = new PrayerTimeTable();
-//$test = $timetable->checkdateandchange();
-//$ttbl = $timetable->generateTimetableMonth();
-
-        
-
-
-        ?>

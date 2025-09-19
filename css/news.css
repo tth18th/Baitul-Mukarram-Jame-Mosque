@@ -1,0 +1,368 @@
+/* CSS (news.css) */
+.news-page {
+    background: linear-gradient(135deg, #f8fafc 0%, #e6f0ff 100%);
+    min-height: 100vh;
+    padding-bottom: 3rem;
+  }
+  
+  .news-header {
+    text-align: center;
+    padding: 4rem 0 3rem;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .news-header h1 {
+    font-size: 4rem;
+    font-weight: 800;
+    background: linear-gradient(90deg, #2563eb 0%, #0ea5e9 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 2;
+  }
+  
+  .news-header p {
+    font-size: 1.25rem;
+    color: #64748b;
+    max-width: 600px;
+    margin: 0 auto 2rem;
+    position: relative;
+    z-index: 2;
+  }
+  
+  .news-header::before {
+    content: "";
+    position: absolute;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(37, 99, 235, 0.15) 0%, rgba(37, 99, 235, 0) 70%);
+    z-index: 1;
+  }
+  
+  /* Facebook Feed Card - Much larger */
+  .fb-card {
+    background: #ffffff;
+    border-radius: 1.5rem;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin: 2rem auto 4rem;
+    position: relative;
+    z-index: 2;
+    border: none;
+    width: 95%;
+    max-width: 1200px; /* Increased max width */
+  }
+  
+  .fb-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.15);
+  }
+  
+  .card-header {
+    background: linear-gradient(120deg, #1e40af 0%, #3b82f6 100%);
+    padding: 3rem 2rem;
+    border-bottom: none;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .card-header::after {
+    content: "";
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 150px;
+    height: 150px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+  }
+  
+  .card-header-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+  }
+  
+  .logo-container {
+    background: white;
+    border-radius: 50%;
+    padding: 0.75rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem;
+    transition: transform 0.3s ease;
+  }
+  
+  .logo-container:hover {
+    transform: scale(1.1);
+  }
+  
+  .logo-container img {
+    height: 80px;
+    width: auto;
+    display: block;
+  }
+  
+  .card-header h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .card-header p {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 0;
+  }
+  
+  .card-body {
+    padding: 0;
+    min-height: 700px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f8fafc;
+    position: relative;
+  }
+  
+  .fb-embed-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+  }
+  
+  .fb-page-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 1rem;
+  }
+  
+  .fb-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    text-align: center;
+    color: #64748b;
+    height: 700px;
+  }
+  
+  .loading-spinner {
+    width: 60px;
+    height: 60px;
+    border: 6px solid rgba(59, 130, 246, 0.2);
+    border-top: 6px solid #3b82f6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 2rem auto;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  .card-footer {
+    background: white;
+    border-top: 1px solid #e2e8f0;
+    padding: 2.5rem;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .fb-btn {
+    background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+    border: none;
+    border-radius: 2rem;
+    padding: 1.2rem 3rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: white;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
+  }
+  
+  .fb-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 20px -3px rgba(59, 130, 246, 0.4);
+    background: linear-gradient(90deg, #2563eb 0%, #3b82f6 100%);
+    text-decoration: none;
+    color: white;
+  }
+  
+  .fb-btn svg {
+    margin-right: 0.75rem;
+    transition: transform 0.3s ease;
+  }
+  
+  .fb-btn:hover svg {
+    transform: scale(1.1);
+  }
+  
+  /* Facebook embed styling - Force larger size */
+  .fb-page, 
+  .fb-page span, 
+  .fb-page iframe {
+    width: 100% !important;
+    min-width: 800px !important;
+    min-height: 700px !important;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 1200px) {
+    .news-header h1 {
+      font-size: 3.5rem;
+    }
+    
+    .card-header h2 {
+      font-size: 2.25rem;
+    }
+    
+    .logo-container img {
+      height: 70px;
+    }
+    
+    .fb-page, 
+    .fb-page span, 
+    .fb-page iframe {
+      min-width: 700px !important;
+    }
+  }
+  
+  @media (max-width: 992px) {
+    .news-header h1 {
+      font-size: 3rem;
+    }
+    
+    .card-header {
+      padding: 2.5rem 1.5rem;
+    }
+    
+    .card-header h2 {
+      font-size: 2rem;
+    }
+    
+    .card-body,
+    .fb-placeholder {
+      min-height: 600px;
+      height: 600px;
+    }
+    
+    .fb-page, 
+    .fb-page span, 
+    .fb-page iframe {
+      min-width: 600px !important;
+      min-height: 600px !important;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .news-header {
+      padding: 3rem 0 2rem;
+    }
+    
+    .news-header h1 {
+      font-size: 2.5rem;
+    }
+    
+    .card-header {
+      padding: 2rem 1rem;
+    }
+    
+    .card-header h2 {
+      font-size: 1.75rem;
+    }
+    
+    .logo-container {
+      padding: 0.5rem;
+    }
+    
+    .logo-container img {
+      height: 60px;
+    }
+    
+    .card-body,
+    .fb-placeholder {
+      min-height: 500px;
+      height: 500px;
+    }
+    
+    .fb-page, 
+    .fb-page span, 
+    .fb-page iframe {
+      min-width: 100% !important;
+      min-height: 500px !important;
+    }
+    
+    .card-footer {
+      padding: 2rem 1rem;
+    }
+    
+    .fb-btn {
+      padding: 1rem 2rem;
+      font-size: 1.1rem;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .news-header h1 {
+      font-size: 2rem;
+    }
+    
+    .news-header p {
+      font-size: 1.1rem;
+      padding: 0 1rem;
+    }
+    
+    .card-header {
+      padding: 1.5rem 1rem;
+    }
+    
+    .card-header h2 {
+      font-size: 1.5rem;
+    }
+    
+    .card-header p {
+      font-size: 1rem;
+    }
+    
+    .card-body,
+    .fb-placeholder {
+      min-height: 450px;
+      height: 450px;
+    }
+    
+    .fb-page, 
+    .fb-page span, 
+    .fb-page iframe {
+      min-height: 450px !important;
+    }
+    
+    .fb-btn {
+      width: 100%;
+      justify-content: center;
+      padding: 0.8rem 1.5rem;
+      font-size: 1rem;
+    }
+    
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border-width: 5px;
+    }
+  }

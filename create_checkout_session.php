@@ -16,7 +16,11 @@ try {
         throw new Exception('Invalid amount');
     }
 
-    $donation = new Donation(STRIPE_SECRET_KEY);
+    if (!class_exists('Donation')) {
+        require_once 'donation.php';
+    }
+/** @var \Donation */
+$donation = new Donation(STRIPE_SECRET_KEY);
     $sessionId = $donation->createCheckoutSession($amount, $email);
 
     if ($sessionId) {

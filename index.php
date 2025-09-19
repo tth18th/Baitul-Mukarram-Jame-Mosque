@@ -5,24 +5,12 @@
   <div class="carousel-inner">
     <div class="carousel-item active">
       <img src="images/banner1.jpg" class="d-block w-100" alt="News 1">
-      <div class="carousel-caption d-none d-md-block">
-        <h5>Community News 1</h5>
-        <p>Latest community updates and notices.</p>
-      </div>
     </div>
     <div class="carousel-item">
       <img src="images/banner2.jpg" class="d-block w-100" alt="News 2">
-      <div class="carousel-caption d-none d-md-block">
-        <h5>Community News 2</h5>
-        <p>Important announcement for upcoming events.</p>
-      </div>
     </div>
     <div class="carousel-item">
       <img src="images/banner3.jpg" class="d-block w-100" alt="News 3">
-      <div class="carousel-caption d-none d-md-block">
-        <h5>Community News 3</h5>
-        <p>Join us for community prayers and gatherings.</p>
-      </div>
     </div>
   </div>
   <button class="carousel-control-prev" type="button" data-bs-target="#bannerCarousel" data-bs-slide="prev">
@@ -33,19 +21,41 @@
     <span class="carousel-control-next-icon" aria-hidden="true"></span>
     <span class="visually-hidden">Next</span>
   </button>
-  <?php
-   include_once("js/script.php");
-   $t = new PrayerTimeTable();
-   $ttbl = $t->dynamicTimetable();
- ?>
-  
+</div>
+
+
+<?php
+// Show Jumu'ah banner only if today is Friday
+if (date('w') == 5) { // 5 = Friday
+    echo '
+    <div class="container my-4">
+        <div class="alert alert-success text-center shadow-lg" style="background: linear-gradient(135deg, #28a745, #20c997); color: white; border: none; border-radius: 12px;">
+            <h3 class="mb-0">
+                <i class="fas fa-mosque"></i> جمعہ مبارک — Jumu’ah Today!
+            </h3>
+            <p class="mb-0 mt-2">Join us for Jumu’ah prayer at <strong>' . ($month_num = (int)date('n')) >= 4 && $month_num <= 9 ? '1:45 PM' : '1:30 PM' . '</strong></p>
+        </div>
+    </div>';
+}
+?>
+
+<!-- Prayer Timetable Section -->
+<div class="timetable-overlap">
+  <div class="timetable-box p-4 bg-white shadow-lg">
+    
+    <?php
+      include_once("js/script.php");
+      $t = new PrayerTimeTable();
+      echo $t->dynamicTimetable(); // Show the prayer time table
+    ?>
+  </div>
+</div>
+
 <!-- Welcome Section -->
 <div class="container my-6 big-div text-center">
   <h1>Welcome to our Mosque</h1>
   <p>Our community center and place of worship offers services and community programs. Join us for prayers, events, and more.</p>
 </div>
-
-
 
 <!-- Social Media Links -->
 <div class="container text-center my-6">
