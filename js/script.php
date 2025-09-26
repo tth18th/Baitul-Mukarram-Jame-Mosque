@@ -24,11 +24,24 @@ class PrayerTimetable {
     // 🔧 CONFIG: Enable/disable dynamic daylight-based adjustment
     private $enable_dynamic_adjustment = true;
 
-    public function __construct() {
-        $url = $this->checkdateandchange();
-        $this->response = $this->checkIntegrityOfData($url);
-        $this->data = json_decode($this->response);
-    }
+ private $selected_year;
+private $selected_month;
+
+public function __construct($year = null, $month = null) {
+    $this->selected_year = $year ?? date('Y');
+    $this->selected_month = $month ?? date('n');
+    $url = $this->buildApiUrl();
+    $this->response = $this->checkIntegrityOfData($url);
+    $this->data = json_decode($this->response);
+}
+
+private function buildApiUrl() {
+    return str_replace(
+        ["{year}", "{month}"],
+        [$this->selected_year, $this->selected_month],
+        $this->api_url
+    );
+}
 
     public function checkIntegrityOfData($url) {
         $txt = @file_get_contents($url);
@@ -102,7 +115,7 @@ class PrayerTimetable {
 
     // ✅ FIXED: Summer = April (4) to September (9)
     private function getJumuahTime($month) {
-        return ($month >= 4 && $month <= 9) ? "13:45" : "13:30";
+        return ($month >= 4 && $month <= 9) ? "13:30" : "13:15";
     }
 
     public function generateTimetableMonth() {
@@ -111,7 +124,7 @@ class PrayerTimetable {
             return;
         }
 
-        echo "<div class='table-responsive my-4'>";
+        echo "<div class='swipe-container my-4'>";
         echo "<h3 class='mb-3'>Monthly Prayer Timetable — Dundee</h3>";
         echo "<table class='table table-bordered table-striped align-middle'>";
         echo "<thead class='table-dark'><tr>";
@@ -130,12 +143,11 @@ class PrayerTimetable {
             'Isha'
         ];
 
-       foreach ($prayer_order as $prayer) {
+        foreach ($prayer_order as $prayer) {
             if (in_array($prayer, ['Sunrise', 'Sunset'])) {
                 echo "<th>$prayer</th>"; // Only one column
             } elseif ($prayer === 'Jumuah') {
-                echo "<th>Jumu’ah<br><small>Start</small></th>";
-               // echo "<th><small>Jamā‘ah</small></th>";
+                echo "<th>Jumu’ah<br><small>Start</small></th>"; // Only one column
             } else {
                 echo "<th>$prayer<br><small>Adhan</small></th>";
                 echo "<th><small>Jamā‘ah</small></th>";
@@ -166,21 +178,24 @@ class PrayerTimetable {
                     $is_friday = ($weekday === 'Friday');
                     if ($is_friday) {
                         $jumuah_time = $this->getJumuahTime((int)$gregorian->month->number);
-                        //$jamaah_time = $jumuah_time;
                         echo "<td class='table-success fw-bold'>$jumuah_time <span class='badge bg-success ms-1'><i class='fas fa-mosque'></i></span></td>";
-                     //   echo "<td class='table-success fw-bold'>$jamaah_time</td>";
                     } else {
-                        echo "<td colspan='2' class='text-muted fst-italic text-center'>—</td>";
+                        // ✅ FIXED: No colspan='2' — only one column now
+                        echo "<td class='text-muted fst-italic text-center'>—</td>";
                     }
                 } elseif (in_array($prayer, ['Sunrise', 'Sunset'])) {
                     $adhan_time = str_replace([' (UTC)', ' (BST)', ' (GMT)'], '', $day->timings->{$prayer} ?? 'N/A');
                     echo "<td>$adhan_time</td>";
-                    //echo "<td></td>";
                 } else {
                     $adhan_raw = $day->timings->{$prayer} ?? 'N/A';
                     $adhan_time = str_replace([' (UTC)', ' (BST)', ' (GMT)'], '', $adhan_raw);
+                    if ($prayer === 'Dhuhr') {
+                    // ✅ FIXED Dhuhr Jamā‘ah time based on month
+                    $jamaah_time = ($this->selected_month >= 4 && $this->selected_month <= 9) ? "13:30" : "13:15";
+                } else {
                     $offset = $this->calculateDynamicOffset($sunrise_time, $sunset_time, $prayer);
                     $jamaah_time = $this->addMinutesToTime($adhan_raw, $offset);
+                }
                     echo "<td>$adhan_time</td>";
                     echo "<td>$jamaah_time</td>";
                 }
@@ -221,7 +236,7 @@ class PrayerTimetable {
 
         $gregorian = $today_data->date->gregorian;
         $hijri = $today_data->date->hijri;
-        $weekday = $gregorian->weekday->en; // ✅ FIXED: Define $weekday here
+        $weekday = $gregorian->weekday->en;
         $sunrise = str_replace([' (UTC)', ' (BST)', ' (GMT)'], '', $today_data->timings->Sunrise ?? '06:00');
         $sunset = str_replace([' (UTC)', ' (BST)', ' (GMT)'], '', $today_data->timings->Sunset ?? '18:00');
 
@@ -249,9 +264,9 @@ class PrayerTimetable {
 
         foreach ($prayer_order as $prayer) {
             if ($prayer === 'Jumuah') {
-                $is_friday = ($weekday === 'friday'); 
+                // ✅ FIXED: Case-insensitive Friday detection
+                $is_friday = strtolower($weekday) === 'friday';
                 $jumuah_time = $this->getJumuahTime((int)$gregorian->month->number);
-                $jamaah_time = $jumuah_time;
 
                 $row_class = $is_friday ? 'table-success fw-bold' : 'text-muted';
                 $display_time = $is_friday ? $jumuah_time : '—';
@@ -264,17 +279,28 @@ class PrayerTimetable {
                 echo "</td>";
 
                 if ($is_friday) {
+                    // ✅ Output same time in both columns to maintain 3-column layout
                     echo "<td>$jumuah_time</td>";
-                    echo "<td>$jamaah_time</td>";
+                    echo "<td>$jumuah_time</td>";
                 } else {
-                    echo "<td colspan='2' class='text-center fst-italic'>$display_time</td>";
+                    echo "<td colspan='2' class='text-center'>$display_time</td>";
                 }
                 echo "</tr>";
             } else {
-                $adhan_raw = $today_data->timings->{$prayer} ?? 'N/A'; // ✅ FIXED: Use $today_data, not $day
+                $adhan_raw = $today_data->timings->{$prayer} ?? 'N/A';
                 $adhan_time = str_replace([' (UTC)', ' (BST)', ' (GMT)'], '', $adhan_raw);
 
                 $row_class = in_array($prayer, ['Sunrise', 'Sunset']) ? 'text-muted' : 'fw-bold';
+
+                 // ✅ Override Dhuhr Jamā‘ah time
+                if ($prayer === 'Dhuhr') {
+                    $current_month = (int)date('n');
+                    $jamaah_time = ($current_month >= 4 && $current_month <= 9) ? "13:30" : "13:15";
+                } else {
+                    $offset = $this->calculateDynamicOffset($sunrise, $sunset, $prayer);
+                    $jamaah_time = $this->addMinutesToTime($adhan_raw, $offset);
+                }
+
 
                 echo "<tr class='$row_class'>";
                 echo "<td><strong>$prayer</strong></td>";
